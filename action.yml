@@ -27,14 +27,17 @@ runs:
         set -euo pipefail
 
         SOURCE="$GITHUB_WORKSPACE/${{ inputs.path }}"
+        DEST="$GITHUB_ACTION_PATH/docs"
         if [ ! -d "$SOURCE" ]; then
           echo "::error::documaru: docs path '${{ inputs.path }}' does not exist."
           exit 1
         fi
 
-        rm -rf "$GITHUB_ACTION_PATH/docs"
-        mkdir -p "$GITHUB_ACTION_PATH/docs"
-        cp -R "$SOURCE"/. "$GITHUB_ACTION_PATH/docs/"
+        if [ "$(realpath "$SOURCE")" != "$(realpath "$DEST")" ]; then
+          rm -rf "$DEST"
+          mkdir -p "$DEST"
+          cp -R "$SOURCE"/. "$DEST/"
+        fi
 
     - name: "Install dependencies"
       shell: bash
