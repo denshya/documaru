@@ -1,0 +1,59 @@
+name: "documaru"
+description: "Build a static documentation site from a folder of markdown files."
+author: "Denshya"
+
+inputs:
+  path:
+    description: "Path to the markdown docs folder, relative to the repository root."
+    required: false
+    default: "docs"
+
+outputs:
+  path:
+    description: "Path of the built site, relative to the repository root."
+    value: "_site"
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Setup bun"
+      uses: "oven-sh/setup-bun@v2"
+      with:
+        bun-version: "1.3.14"
+
+    - name: "Copy docs into the builder"
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        SOURCE="$GITHUB_WORKSPACE/${{ inputs.path }}"
+        if [ ! -d "$SOURCE" ]; then
+          echo "::error::documaru: docs path '${{ inputs.path }}' does not exist."
+          exit 1
+        fi
+
+        rm -rf "$GITHUB_ACTION_PATH/docs"
+        mkdir -p "$GITHUB_ACTION_PATH/docs"
+        cp -R "$SOURCE"/. "$GITHUB_ACTION_PATH/docs/"
+
+    - name: "Install dependencies"
+      shell: bash
+      run: |
+        set -euo pipefail
+        cd "$GITHUB_ACTION_PATH"
+        bun install --frozen-lockfile
+
+    - name: "Build and prerender the site"
+      shell: bash
+      run: |
+        set -euo pipefail
+        cd "$GITHUB_ACTION_PATH"
+        bun run build
+        bun run build:ssg
+
+    - name: "Emit the site"
+      shell: bash
+      run: |
+        set -euo pipefail
+        mkdir -p "$GITHUB_WORKSPACE/_site"
+        cp -R "$GITHUB_ACTION_PATH/build"/. "$GITHUB_WORKSPACE/_site/"
