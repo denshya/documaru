@@ -8,6 +8,11 @@ inputs:
     required: false
     default: "docs"
 
+  base-url:
+    description: "Base URL the site is served from. Defaults to the repository name (GitHub Pages project pages)."
+    required: false
+    default: ""
+
 outputs:
   path:
     description: "Path of the built site, relative to the repository root."
@@ -20,6 +25,32 @@ runs:
       uses: "oven-sh/setup-bun@v2"
       with:
         bun-version: "1.3.14"
+
+    - name: "Resolve the base URL"
+      shell: bash
+      env:
+        INPUT_BASE_URL: ${{ inputs.base-url }}
+      run: |
+        set -euo pipefail
+
+        if [ -n "$INPUT_BASE_URL" ]; then
+          BASE="$INPUT_BASE_URL"
+        else
+          REPO="${GITHUB_REPOSITORY#*/}"
+          OWNER="${GITHUB_REPOSITORY%/*}"
+          if [ "$OWNER" = "$REPO" ]; then BASE="/"; else BASE="/$REPO/"; fi
+        fi
+
+        case "$BASE" in
+          /*) ;;
+          *) BASE="/$BASE" ;;
+        esac
+        case "$BASE" in
+          */) ;;
+          *) BASE="$BASE/" ;;
+        esac
+
+        echo "DOCUMARU_BASE_URL=$BASE" >> "$GITHUB_ENV"
 
     - name: "Copy docs into the builder"
       shell: bash

@@ -92,7 +92,7 @@ function svgIcon(name: string): Element {
     tagName: "div",
     properties: { className: "icon icon--link" },
     children: [
-      { // <svg class="icon icon--fountain-pen"><use href="/static/icons.svg#fountain-pen"></use></svg>
+      { // <svg class="icon icon--fountain-pen"><use href="static/icons.svg#fountain-pen"></use></svg>
         type: "element",
         tagName: "svg",
         properties: {},
@@ -100,7 +100,8 @@ function svgIcon(name: string): Element {
           {
             type: "element",
             tagName: "use",
-            properties: { href: `/static/icons.svg#${name}` },
+            // Relative so it resolves against the injected `<base href>`.
+            properties: { href: `static/icons.svg#${name}` },
             children: []
           }
         ]

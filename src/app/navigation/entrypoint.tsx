@@ -35,7 +35,7 @@ async function NavigationEntrypoint() {
       </header>
       <main style={{ display: "flex", gap: "2.5em" }}>
         <aside>
-          <NavigationPanel tree={getPages(fileRouter.routes.map(x => x.pattern))} active={globalNavigation.match.to(x => x?.route.pattern.slice(1) ?? "")} />
+          <NavigationPanel tree={getPages(fileRouter.routes.map(x => x.pattern))} active={globalNavigation.match.to(x => x?.route.pattern ?? "")} />
         </aside>
         <article style={{ flex: 1 }}>
           <Breadcrumbs path={globalNavigation.match.$.route.$.pattern} />
