@@ -54,6 +54,7 @@ A copy lives at `examples/docs-site.yml`.
 | Name | Required | Default | Description |
 | ---- | -------- | ------- | ----------- |
 | `path` | no | `docs` | Folder with the `.md`/`.mdx` pages, relative to the repository root. |
+| `base-url` | no | repository name | URL prefix the site is served from, for example `/my-repo/`. Defaults to `/<repo>/` so project pages work without extra config. Set to `/` for a user or organization page (`user.github.io`). |
 
 ## Outputs
 
@@ -72,6 +73,20 @@ A copy lives at `examples/docs-site.yml`.
 
 Enable Pages at Settings → Pages → Source: **GitHub Actions**. Nothing else.
 
+Both page kinds work out of the box:
+
+- Project pages (`user.github.io/repo`): the base URL defaults to `/<repo>/`.
+- User and organization pages (`user.github.io`): pass `base-url: /`.
+
+The base URL can be overridden with the `base-url` input:
+
+```yaml
+      - uses: denshya/documaru@v1
+        with:
+          path: docs
+          base-url: /docs/
+```
+
 ## Local development
 
 ```bash
@@ -84,5 +99,4 @@ The static site lands in `build/`. Serve it with `bun run preview`.
 
 ## Known limitations
 
-- Assets are served from `/`. User pages (`user.github.io`) work out of the box. Project pages (`user.github.io/repo`) need a base URL, not supported yet.
 - Site brand text is fixed.

@@ -8,6 +8,8 @@ import articleMdx from "./vite.mdx"
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // Emit relative asset refs so they resolve against the injected `<base href>`.
+  base: "./",
   plugins: [generateBundleMap(), articleMdx()],
   resolve: {
     alias: {

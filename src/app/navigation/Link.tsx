@@ -16,11 +16,15 @@ interface LinkProps {
 function Link(props: LinkProps & { label: string, children?: never }): unknown
 function Link(props: LinkProps & { label?: never, children: unknown }): unknown
 function Link(props: LinkProps) {
+  // `/rest-api-facade` on project pages, empty on user pages.
+  const basePath = new URL(document.baseURI).pathname.replace(/\/$/, "")
+
   const resolvedPath = globalNavigation.toResolved(props.to)
-  const active = globalNavigation.whenWithin(resolvedPath)
+  const href = resolvedPath.to(path => path === "" || path.startsWith("http") ? path : basePath + path)
+  const active = globalNavigation.whenWithin(href)
 
   function onClick(event: MouseEvent) {
-    const to = resolvedPath.current
+    const to = href.current
     if (to.includes("://")) return
 
     event.preventDefault()
@@ -37,7 +41,7 @@ function Link(props: LinkProps) {
       className={props.className ?? "nav-link"}
       classMods={[{ active }, props.classMods]}
       style={props.style}
-      href={resolvedPath ?? undefined}
+      href={href ?? undefined}
       on={{ click: onClick }}
       aria={{ ariaLabel: props.label }}
       target={resolvedPath.to(to => to.includes("://") ? "_blank" : "")}

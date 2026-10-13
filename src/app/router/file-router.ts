@@ -13,9 +13,14 @@ const config = {
 const filePaths = import.meta.glob("~docs/**/*.{md,mdx}")
 const fileRouter = new PathRouter<PageModule>
 
+// Resolve route patterns against the document base URL (`<base href>`), so the
+// same patterns match on project pages served from a subfolder.
+PathRouter.baseUrl = document.baseURI
+
 
 for (const filePath in filePaths) {
-  const pattern = PathRouterUtils.patternFromFilePath(filePath.replace(/(.*)\/\1\.(md|mdx)$/m, "$1").replace(/\.(md|mdx)$/m, ""), config)
+  // Relative patterns (no leading slash) are what makes base-aware matching work.
+  const pattern = PathRouterUtils.patternFromFilePath(filePath.replace(/(.*)\/\1\.(md|mdx)$/m, "$1").replace(/\.(md|mdx)$/m, ""), config).replace(/^\//, "")
   const resource = filePaths[filePath] as () => Promise<PageModule>
 
   fileRouter.routes.push({ filePath, pattern, resource })

@@ -62,7 +62,7 @@ function Icon(props: IconProps) {
 
   return (
     <svg class={className}>
-      <use href={State.f`/static/icons.svg#${props.name}`} />
+      <use href={State.f`static/icons.svg#${props.name}`} />
     </svg>
   )
 }
