@@ -1,37 +1,29 @@
 .breadcrumbs {
-	--icon-size: 0.625rem;
+	margin-bottom: 0.75rem;
 
-	display: flex;
-	align-items: center;
+	font-size: 0.8125rem;
+	font-weight: 600;
+	color: var(--accent);
 
-	&>ol {
-		all: unset;
-
+	ol {
 		display: flex;
-		align-items: center;
-	}
+		flex-wrap: wrap;
+		gap: 0.25rem 0;
 
-	&>ol>li {
+		margin: 0;
+		padding: 0;
 		list-style: none;
-
-		display: flex;
-		align-items: center;
-		gap: 0.25em;
-
-
-		&:last-child>a {
-			background: rgba(black, 0.05);
-			border-bottom-color: rgba(black, 0.2);
-			border-radius: 0.375em;
-		}
 	}
 
-	a {
-		padding: 0.375em 0.75em;
-		text-decoration: none;
-		font-size: 0.875rem;
-		background: white;
-		border-bottom: 2px solid transparent;
-		transition: 250ms ease background-color, 250ms ease border-color;
+	li+li::before {
+		content: "/";
+		margin: 0 0.5rem;
+		font-weight: 400;
+		color: var(--border-strong);
+	}
+
+	a:hover {
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
 	}
 }

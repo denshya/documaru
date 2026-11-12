@@ -7,11 +7,34 @@ inputs:
     description: "Path to the markdown docs folder, relative to the repository root."
     required: false
     default: "docs"
-
-  base-url:
-    description: "Base URL the site is served from. Defaults to the repository name (GitHub Pages project pages)."
+  title:
+    description: "Site title shown in the top bar and in page titles. Defaults to the repository name."
     required: false
     default: ""
+  description:
+    description: "One sentence about the project, used for search engines and link previews. Defaults to the first paragraph of the home page."
+    required: false
+    default: ""
+  logo:
+    description: "Logo shown next to the title and used as the favicon: a path relative to the docs folder, or a URL."
+    required: false
+    default: ""
+  accent-color:
+    description: "Color of links and highlights, e.g. '#0f766e'."
+    required: false
+    default: ""
+  base-url:
+    description: "Base URL the site is served from. Defaults to '/<repository>/' for project pages (user.github.io/repository). Set to '/' for a user or organization page."
+    required: false
+    default: ""
+  footer:
+    description: "Text shown in the footer. Defaults to the site title."
+    required: false
+    default: ""
+  repository:
+    description: "GitHub repository ('owner/name') behind the GitHub and 'Edit this page' links. Set to an empty string to hide them."
+    required: false
+    default: "${{ github.repository }}"
 
 outputs:
   path:
@@ -50,7 +73,7 @@ runs:
           *) BASE="$BASE/" ;;
         esac
 
-        echo "DOCUMARU_BASE_URL=$BASE" >> "$GITHUB_ENV"
+        echo "DOCUMARU_BASE=$BASE" >> "$GITHUB_ENV"
 
     - name: "Copy docs into the builder"
       shell: bash
@@ -79,6 +102,17 @@ runs:
 
     - name: "Build and prerender the site"
       shell: bash
+      env:
+        DOCUMARU_TITLE: "${{ inputs.title }}"
+        DOCUMARU_DESCRIPTION: "${{ inputs.description }}"
+        DOCUMARU_LOGO: "${{ inputs.logo }}"
+        DOCUMARU_ACCENT: "${{ inputs.accent-color }}"
+        DOCUMARU_FOOTER: "${{ inputs.footer }}"
+        DOCUMARU_REPO: "${{ inputs.repository }}"
+        DOCUMARU_BRANCH: "${{ github.event.repository.default_branch }}"
+        DOCUMARU_DOCS_PATH: "${{ inputs.path }}"
+        # Where the pages come from: last-updated dates are read from its git history.
+        DOCUMARU_SOURCE_DIR: "${{ github.workspace }}/${{ inputs.path }}"
       run: |
         set -euo pipefail
         cd "$GITHUB_ACTION_PATH"

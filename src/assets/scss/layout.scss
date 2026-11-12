@@ -1,0 +1,136 @@
+@use "mixins" as *;
+
+.layout {
+	display: flex;
+	flex-direction: column;
+	min-height: 100dvh;
+}
+
+.layout__body {
+	flex: 1;
+
+	display: grid;
+	grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(--toc-width);
+	gap: 0 calc(var(--gutter) * 1.5);
+
+	width: 100%;
+	max-width: var(--page-width);
+	margin: 0 auto;
+	padding: 0 var(--gutter);
+
+	@include below($toc-hidden) {
+		grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+	}
+
+	@include below($sidebar-drawer) {
+		display: block;
+	}
+}
+
+.layout__sidebar {
+	position: sticky;
+	top: var(--topbar-height);
+
+	height: calc(100dvh - var(--topbar-height));
+	margin-left: -0.75rem;
+	padding: 1.5rem 0.5rem 3rem 0;
+
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	@include thin-scrollbar;
+
+	@include below($sidebar-drawer) {
+		position: fixed;
+		inset: 0 auto 0 0;
+		z-index: 40;
+
+		width: min(20rem, 86vw);
+		height: 100dvh;
+		margin: 0;
+		padding: 1rem 1rem 3rem;
+
+		background: var(--bg);
+		border-right: 1px solid var(--border);
+		box-shadow: var(--shadow);
+
+		visibility: hidden;
+		transform: translateX(-100%);
+		transition: transform 220ms ease, visibility 220ms;
+
+		.layout--menu-open & {
+			visibility: visible;
+			transform: none;
+		}
+	}
+}
+
+.layout__backdrop {
+	display: none;
+
+	@include below($sidebar-drawer) {
+		position: fixed;
+		inset: 0;
+		z-index: 39;
+
+		display: block;
+		background: rgba(10, 12, 16, 0.5);
+
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 220ms ease;
+
+		.layout--menu-open & {
+			opacity: 1;
+			pointer-events: auto;
+		}
+	}
+}
+
+.layout__main {
+	min-width: 0;
+	width: 100%;
+	max-width: var(--content-width);
+	margin: 0 auto;
+	padding: 2rem 0 4rem;
+
+	@include below($sidebar-drawer) {
+		padding-top: 1.5rem;
+	}
+}
+
+.layout__toc {
+	position: sticky;
+	top: var(--topbar-height);
+
+	height: calc(100dvh - var(--topbar-height));
+	padding: 2.25rem 0 3rem;
+
+	overflow-y: auto;
+	@include thin-scrollbar;
+
+	@include below($toc-hidden) {
+		display: none;
+	}
+}
+
+/* Landing page: no sidebar, no table of contents, wider content. */
+
+.layout--landing {
+	.layout__body {
+		display: block;
+	}
+
+	.layout__main {
+		max-width: 64rem;
+	}
+
+	.layout__toc {
+		display: none;
+	}
+
+	@include above($sidebar-drawer) {
+		.layout__sidebar {
+			display: none;
+		}
+	}
+}

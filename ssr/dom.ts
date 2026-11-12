@@ -1,24 +1,11 @@
 import { Window } from "happy-dom"
 
-
-/** Normalizes the site base URL to a leading and trailing slash form. */
-export function normalizeBaseURL(value: string | undefined): string {
-  let base = value?.trim() || "/"
-  if (!base.startsWith("/")) base = "/" + base
-  if (!base.endsWith("/")) base += "/"
-  return base
-}
-
-/** Base URL the generated site is served from. */
-export const baseURL = normalizeBaseURL(process.env.DOCUMARU_BASE_URL)
-
 export function injectDOMPolyfill(context: typeof globalThis) {
   const window = new Window({
     width: 1300,
     height: 1080,
 
-    // Placeholder origin plus base path, so prerendered hrefs carry the base.
-    url: `http://documaru.local${baseURL}`,
+    url: "ws://denshya.dev/",
     settings: {
       disableComputedStyleRendering: true,
       disableCSSFileLoading: true,
@@ -27,9 +14,6 @@ export function injectDOMPolyfill(context: typeof globalThis) {
       handleDisabledFileLoadingAsSuccess: true,
     }
   })
-
-  // Keep `document.baseURI` stable while the renderer walks route locations.
-  window.document.head.insertAdjacentHTML("afterbegin", `<base href="${baseURL}">`)
 
   // Resolve CSS files to "load".
   const originalAddEventListener = window.HTMLLinkElement.prototype.addEventListener
