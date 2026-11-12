@@ -23,10 +23,10 @@ inputs:
     description: "Color of links and highlights, e.g. '#0f766e'."
     required: false
     default: ""
-  base:
-    description: "Base path the site is served from. Use '/<repository>/' for project pages (user.github.io/repository)."
+  base-url:
+    description: "Base URL the site is served from. Defaults to '/<repository>/' for project pages (user.github.io/repository). Set to '/' for a user or organization page."
     required: false
-    default: "/"
+    default: ""
   footer:
     description: "Text shown in the footer. Defaults to the site title."
     required: false
@@ -48,6 +48,32 @@ runs:
       uses: "oven-sh/setup-bun@v2"
       with:
         bun-version: "1.3.14"
+
+    - name: "Resolve the base URL"
+      shell: bash
+      env:
+        INPUT_BASE_URL: ${{ inputs.base-url }}
+      run: |
+        set -euo pipefail
+
+        if [ -n "$INPUT_BASE_URL" ]; then
+          BASE="$INPUT_BASE_URL"
+        else
+          REPO="${GITHUB_REPOSITORY#*/}"
+          OWNER="${GITHUB_REPOSITORY%/*}"
+          if [ "$OWNER" = "$REPO" ]; then BASE="/"; else BASE="/$REPO/"; fi
+        fi
+
+        case "$BASE" in
+          /*) ;;
+          *) BASE="/$BASE" ;;
+        esac
+        case "$BASE" in
+          */) ;;
+          *) BASE="$BASE/" ;;
+        esac
+
+        echo "DOCUMARU_BASE=$BASE" >> "$GITHUB_ENV"
 
     - name: "Copy docs into the builder"
       shell: bash
@@ -81,7 +107,6 @@ runs:
         DOCUMARU_DESCRIPTION: "${{ inputs.description }}"
         DOCUMARU_LOGO: "${{ inputs.logo }}"
         DOCUMARU_ACCENT: "${{ inputs.accent-color }}"
-        DOCUMARU_BASE: "${{ inputs.base }}"
         DOCUMARU_FOOTER: "${{ inputs.footer }}"
         DOCUMARU_REPO: "${{ inputs.repository }}"
         DOCUMARU_BRANCH: "${{ github.event.repository.default_branch }}"

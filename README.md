@@ -60,7 +60,7 @@ Everything is optional.
 | `description` | first paragraph of the home page | One sentence about the project, for search engines and link previews. |
 | `logo` | a letter icon | Logo next to the title, also the favicon. A path relative to the docs folder, or a URL. |
 | `accent-color` | `#3451d1` | Color of links and highlights. |
-| `base` | `/` | Base path the site is served from. Use `/<repository>/` for project pages. |
+| `base-url` | `/<repository>/` | Base URL the site is served from. Set to `/` for a user or organization page (`user.github.io`). |
 | `footer` | site title | Text shown in the footer. |
 | `repository` | current repository | Repository behind the GitHub and "Edit this page" links. An empty string hides them. |
 
@@ -69,7 +69,7 @@ Everything is optional.
   with:
     title: My Project
     accent-color: "#0f766e"
-    base: /my-project/
+    base-url: /my-project/
 ```
 
 ## Outputs
@@ -154,6 +154,11 @@ Last-updated dates come from git history. `actions/checkout` fetches a single co
 
 Enable Pages at Settings → Pages → Source: **GitHub Actions**. Nothing else.
 
+The base URL is detected from the repository name, so both page kinds work out of the box:
+
+- Project pages (`user.github.io/repo`): the base URL defaults to `/repo/`.
+- User and organization pages (`user.github.io`): pass `base-url: /`.
+
 ## Local development
 
 ```bash
@@ -168,5 +173,4 @@ Pages are read from `docs/`. Action inputs are environment variables here: `DOCU
 
 ## Known limitations
 
-- The base path is not detected: project pages (`user.github.io/repo`) need `base: /repo/`.
 - Raw HTML inside `.md` files is dropped, use `.mdx` for it.
