@@ -3,16 +3,22 @@ import { defineConfig } from "vite"
 
 import generateBundleMap from "./vite.bundle-map"
 import articleMdx from "./vite.mdx"
+import documaruSite, { SiteOptions } from "./vite.site"
 
 
+const site: SiteOptions = {
+  docsDir: path.resolve(__dirname, "./docs"),
+  base: normalizeBase(process.env.DOCUMARU_BASE),
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [generateBundleMap(), articleMdx()],
+  base: site.base,
+  plugins: [generateBundleMap(), ...documaruSite(site), articleMdx(site)],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      "~docs": path.resolve(__dirname, "./docs"),
+      "~docs": site.docsDir,
     },
   },
   server: {
@@ -49,3 +55,9 @@ export default defineConfig({
     },
   },
 })
+
+/** `repo`, `/repo` and `/repo/` all mean `/repo/`. */
+function normalizeBase(input: string | undefined) {
+  const trimmed = (input ?? "").trim().replace(/^\/+|\/+$/g, "")
+  return trimmed.length > 0 ? `/${trimmed}/` : "/"
+}

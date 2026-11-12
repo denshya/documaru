@@ -1,0 +1,92 @@
+@use "mixins" as *;
+
+:root {
+	color-scheme: light;
+
+	/* Set from the `accent-color` input, see `vite.site.ts`. */
+	--accent-base: #3451d1;
+	--accent-on: #ffffff;
+
+	--bg: #ffffff;
+	--bg-soft: #f6f7f9;
+	--bg-mute: #eceef2;
+	--bg-glass: rgba(255, 255, 255, 0.8);
+
+	--fg: #16181d;
+	--fg-soft: #454b57;
+	--fg-mute: #6a7180;
+
+	--border: #e3e6eb;
+	--border-strong: #cdd2da;
+
+	--accent: var(--accent-base);
+	--accent-fg: var(--accent-on);
+	--accent-soft: color-mix(in srgb, var(--accent) 10%, transparent);
+	--accent-line: color-mix(in srgb, var(--accent) 35%, transparent);
+
+	--code-bg: #f6f8fa;
+	--code-inline: rgba(110, 120, 140, 0.14);
+	--mark: #fff1a8;
+
+	--note: #2563eb;
+	--tip: #15803d;
+	--important: #7c3aed;
+	--warning: #b45309;
+	--caution: #dc2626;
+	--added: #1a7f37;
+	--removed: #cf222e;
+
+	--shadow: 0 16px 48px -12px rgba(16, 24, 40, 0.25), 0 0 0 1px rgba(16, 24, 40, 0.06);
+
+	--font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+	--font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+	--topbar-height: 3.5rem;
+	--sidebar-width: 17rem;
+	--toc-width: 15rem;
+	--content-width: 46rem;
+	--page-width: 90rem;
+	--gutter: 2rem;
+
+	--radius: 0.5rem;
+	--radius-small: 0.375rem;
+}
+
+@include dark {
+	color-scheme: dark;
+
+	--bg: #0f1116;
+	--bg-soft: #161920;
+	--bg-mute: #20242d;
+	--bg-glass: rgba(15, 17, 22, 0.8);
+
+	--fg: #e7e9ee;
+	--fg-soft: #b9bfcb;
+	--fg-mute: #8b93a2;
+
+	--border: #262b35;
+	--border-strong: #3a4150;
+
+	--accent: color-mix(in oklab, var(--accent-base) 55%, white);
+	--accent-fg: #0f1116;
+
+	--code-bg: #161920;
+	--code-inline: rgba(140, 150, 170, 0.2);
+	--mark: #6b5a00;
+
+	--note: #60a5fa;
+	--tip: #4ade80;
+	--important: #a78bfa;
+	--warning: #fbbf24;
+	--caution: #f87171;
+	--added: #3fb950;
+	--removed: #f85149;
+
+	--shadow: 0 16px 48px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+@include below($sidebar-drawer) {
+	:root {
+		--gutter: 1.25rem;
+	}
+}

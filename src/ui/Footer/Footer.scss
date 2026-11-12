@@ -1,0 +1,29 @@
+.footer {
+	border-top: 1px solid var(--border);
+}
+
+.footer__inner {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: 0.5rem 2rem;
+
+	max-width: var(--page-width);
+	margin: 0 auto;
+	padding: 1.5rem var(--gutter);
+
+	font-size: 0.8125rem;
+	color: var(--fg-mute);
+
+	a {
+		color: var(--fg-soft);
+		text-decoration: underline;
+		text-decoration-color: var(--border-strong);
+		text-underline-offset: 0.2em;
+
+		&:hover {
+			color: var(--accent);
+			text-decoration-color: currentColor;
+		}
+	}
+}
